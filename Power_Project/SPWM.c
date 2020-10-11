@@ -8,7 +8,7 @@ void PWM_TA_init(void)
 {
     TA0CTL = TACLR;
     TA0CTL = TASSEL_2  + MC_1 + ID_0;    // ACLK + Up
-    TA0CCTL1 = OUTMOD_7;PWM12_SET;
+    TA0CCTL1 = OUTMOD_3;PWM12_SET;
 //    TA0CCTL2 = OUTMOD_3;PWM13_SET;1
 //    TA0CCTL3 = OUTMOD_3;PWM14_SET;
 //    TA0CCTL4 = OUTMOD_7;PWM15_SET;
@@ -54,7 +54,7 @@ void Sin_Table(void)
     float interval = 2 * 3.14159 / SIN_NUM;
     for(i = 0; i < SIN_NUM; i++)
     {
-        sine = sin(i * interval) * 0.9;
-        sin_table[i] = (unsigned int) ((1 + sine) * Period_B / 2);
+        sine = sin(i * interval) * 0.6;
+        sin_table[i] = (unsigned int) ((0.9 + sine) * Period_B / 2);
     }
 }

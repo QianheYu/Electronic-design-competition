@@ -2,7 +2,9 @@
 #include<variate_init.h>
 #include<CLOCK.h>
 #include<SPWM.h>
+#include<ADC.h>
 
+extern unsigned int test;
 void main(void)
 {
     WDTCTL = WDTPW + WDTHOLD;
@@ -14,21 +16,18 @@ void main(void)
     PWM_TB_init();
 
     TB0CCTL0 = CCIE;
+
+    ADC_Init();
     _enable_interrupts();
 
-    while(1);
-
+    while(1)
+    {
+        ADC12CTL0 |= ADC12SC;
+//        if(index == 256)
+//        {
+//            index = 0;
+//            Vpp_AC0_Operation();
+//            Vpp_AC1_Operation();
+//        }
+    }
 }
-
-//#pragma vector = TIMER0_A0_VECTOR
-//__interrupt void Timer0_A0_ISR(void)
-//{
-////    _disable_interrupts();
-//
-//    static unsigned int i = 0;
-//    TA0CCR1 = sin_table[i];
-//    TA0CCR2 = sin_table[i];
-//    i = (++i) % SIN_NUM;
-//
-////    _enable_interrupts();
-//}

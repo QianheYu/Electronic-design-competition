@@ -1,19 +1,15 @@
 #include<MSP430F5529.h>
 #include<variate_init.h>
-#include<PI_PWM.h>
 
-volatile unsigned int results[256];
-volatile unsigned int results0[256];
-volatile unsigned int results1[256];
-volatile unsigned int Vpp_DC0[Vpp_num];
-volatile unsigned int Vpp_DC1[Vpp_num];
-volatile unsigned int Vpp_AC[Vpp_num];
-float Vpp_dc0;
-float Vpp_dc1;
-float Vpp_ac;
+volatile unsigned int results_0[256];
+volatile unsigned int results_1[256];
+volatile unsigned int Vpp_Table_Ac0[Vpp_num];
+volatile unsigned int Vpp_Table_Ac1[Vpp_num];
+float Vpp_ac0;
+float Vpp_ac1;
+unsigned int index = 0;
 
-
-void ADC_init(void)
+void ADC_Init(void)
 {
     P6SEL |= BIT0 + BIT1;
     ADC12CTL0 = ADC12SHT0_8 + ADC12ON + ADC12MSC;
@@ -25,76 +21,26 @@ void ADC_init(void)
     ADC12CTL0 |= ADC12ENC;
 }
 
-void Vpp_DC0_Operation(void)
-{
-    static unsigned char Vpp_cnt0 = 0;
-    unsigned int t;
-    unsigned long int Results_All0 = 0;
-    for(t = 0;t <= 255;t++)
-    {
-        Results_All0 = Results_All0 + results0[t];
-    }
-    Vpp_DC0[Vpp_cnt0] = Results_All0 / 256;
-    Vpp_cnt0++;
-    if(Vpp_cnt0 == Vpp_num)
-    {
-        unsigned int total = 0;
-        unsigned int j;
-        for(j = 0;j < Vpp_num;j++)
-        {
-            total = total + Vpp_DC0[j];
-        }
-        Vpp_dc0 = (float) (total / Vpp_num * 3.3 / 4095);
-        Vpp_cnt0 = 0;
-//        Dc_Pwm();
-    }
-}
-
-void Vpp_DC1_Operation(void)
-{
-    static unsigned char Vpp_cnt1 = 0;
-    unsigned int tt;
-    unsigned long int Results_All1 = 0;
-    for(tt = 0;tt <= 255;tt++)
-    {
-        Results_All1 = Results_All1 + results1[tt];
-    }
-    Vpp_DC1[Vpp_cnt1] = Results_All1 / 256;
-    Vpp_cnt1++;
-    if(Vpp_cnt1 == Vpp_num)
-    {
-        unsigned int total = 0;
-        unsigned int jj;
-        for(jj = 0;jj < Vpp_num;jj++)
-        {
-            total = total + Vpp_DC1[jj];
-        }
-        Vpp_dc1 = (float) (total / Vpp_num * 3.3 / 4095);
-        Vpp_cnt1 = 0;
-//        Dc_Pwm();
-    }
-}
-
-void Vpp_AC_Operation(void)
+void Vpp_AC0_Operation(void)
 {
     static unsigned char Vpp_cnt = 0;
-    unsigned int t;
+    unsigned int j;
     unsigned int V_max = 0;
     unsigned int V_min = 0;
-    V_max = results[0];
-    V_min = results[0];
-    for(t = 1;t <= 255;t++)
+    V_max = results_0[0];
+    V_min = results_0[0];
+    for(j = 1;j <= 255;j++)
     {
-        if(results[t] > V_max)
+        if(results_0[j] > V_max)
         {
-            V_max = results[t];
+            V_max = results_0[j];
         }
-        if(results[t] < V_min)
+        if(results_0[j] < V_min)
         {
-            V_min = results[t];
+            V_min = results_0[j];
         }
     }
-    Vpp_AC[Vpp_cnt] = V_max - V_min;
+    Vpp_Table_Ac0[Vpp_cnt] = V_max - V_min;
     Vpp_cnt++;
     if(Vpp_cnt == Vpp_num)
     {
@@ -102,10 +48,65 @@ void Vpp_AC_Operation(void)
         unsigned int j;
         for(j = 0;j < Vpp_num;j++)
         {
-            total = total + Vpp_AC[j];
+            total = total + Vpp_Table_Ac0[j];
         }
-        Vpp_ac = (float) (total / Vpp_num * 3.3 / 4095);
+        Vpp_ac0 = (float) (total / Vpp_num * 3.3 / 4095);
         Vpp_cnt = 0;
-        Ac_Pwm();
+    }
+}
+
+void Vpp_AC1_Operation(void)
+{
+    static unsigned char Vpp_cnt = 0;
+    unsigned int k;
+    unsigned int V_max = 0;
+    unsigned int V_min = 0;
+    V_max = results_1[0];
+    V_min = results_1[0];
+    for(k = 1;k <= 255;k++)
+    {
+        if(results_1[k] > V_max)
+        {
+            V_max = results_1[k];
+        }
+        if(results_1[k] < V_min)
+        {
+            V_min = results_1[k];
+        }
+    }
+    Vpp_Table_Ac1[Vpp_cnt] = V_max - V_min;
+    Vpp_cnt++;
+    if(Vpp_cnt == Vpp_num)
+    {
+        unsigned int total = 0;
+        unsigned int j;
+        for(j = 0;j < Vpp_num;j++)
+        {
+            total = total + Vpp_Table_Ac1[j];
+        }
+        Vpp_ac1 = (float) (total / Vpp_num * 3.3 / 4095);
+        Vpp_cnt = 0;
+    }
+}
+
+#pragma vector = ADC12_VECTOR
+__interrupt void ADC12_ISR(void)
+{
+//    __enable_interrupt();
+    switch(ADC12IV)
+    {
+    case 8:
+        results_0[index]=ADC12MEM0;
+        results_1[index]=ADC12MEM1;
+        index++;
+        if(index == 256)
+        {
+            index = 0;
+            Vpp_AC0_Operation();
+            Vpp_AC1_Operation();
+
+        }
+        break;
+    default:break;
     }
 }

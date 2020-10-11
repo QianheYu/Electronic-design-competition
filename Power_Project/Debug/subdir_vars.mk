@@ -9,31 +9,37 @@ CMD_SRCS += \
 ../lnk_msp430f5529.cmd 
 
 C_SRCS += \
+../ADC.c \
 ../CLOCK.c \
 ../SPWM.c \
 ../main.c 
 
 C_DEPS += \
+./ADC.d \
 ./CLOCK.d \
 ./SPWM.d \
 ./main.d 
 
 OBJS += \
+./ADC.obj \
 ./CLOCK.obj \
 ./SPWM.obj \
 ./main.obj 
 
 OBJS__QUOTED += \
+"ADC.obj" \
 "CLOCK.obj" \
 "SPWM.obj" \
 "main.obj" 
 
 C_DEPS__QUOTED += \
+"ADC.d" \
 "CLOCK.d" \
 "SPWM.d" \
 "main.d" 
 
 C_SRCS__QUOTED += \
+"../ADC.c" \
 "../CLOCK.c" \
 "../SPWM.c" \
 "../main.c" 
