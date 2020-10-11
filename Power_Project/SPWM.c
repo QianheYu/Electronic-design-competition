@@ -3,7 +3,7 @@
 #include<math.h>
 
 volatile unsigned int sin_table[SIN_NUM] = {};
-static int test = 0;
+
 void PWM_TA_init(void)
 {
     TA0CTL = TACLR;
@@ -42,7 +42,6 @@ __interrupt void Timer0_B0_ISR(void)
     static unsigned int i = 0;
     TB0CCR5 = sin_table[i];
     TB0CCR6 = sin_table[i];
-    test = 1;
     i = (++i) % SIN_NUM;
 
 //    _enable_interrupts();
