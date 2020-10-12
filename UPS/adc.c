@@ -5,6 +5,7 @@
  *      Author: QianheYu
  */
 
+#include <msp430f5529.h>
 #include <adc.h>
 //volatile unsigned int results_0[256];
 //volatile unsigned int results_1[256];
@@ -12,8 +13,8 @@
 volatile unsigned int ch0_results[256];
 volatile unsigned int ch1_results[256];
 volatile unsigned int ch2_results[256];
-volatile unsigned int Vpp_Table_Ac0[Vpp_num];
-volatile unsigned int Vpp_Table_Ac1[Vpp_num];
+volatile unsigned int Vpp_Table_Ac0[Accycle_num];
+volatile unsigned int Vpp_Table_Ac1[Accycle_num];
 float ac0;
 float ac1;
 float dc;
@@ -70,15 +71,15 @@ void CH0_Vpp_Operation(void)
     }
     Vpp_Table_Ac0[Vpp_cnt] = V_max - V_min;
     Vpp_cnt++;
-    if(Vpp_cnt == Vpp_num)
+    if(Vpp_cnt == Accycle_num)
     {
         unsigned int total = 0;
         unsigned int j;
-        for(j = 0;j < Vpp_num;j++)
+        for(j = 0;j < Accycle_num;j++)
         {
             total = total + Vpp_Table_Ac0[j];
         }
-        ac0 = (float) (total / Vpp_num * 3.3 / 4095);
+        ac0 = (float) (total / Accycle_num * 3.3 / 4095);
         Vpp_cnt = 0;
     }
 }
@@ -114,15 +115,15 @@ void CH1_Vpp_Operation(void)
     }
     Vpp_Table_Ac1[Vpp_cnt] = V_max - V_min;
     Vpp_cnt++;
-    if(Vpp_cnt == Vpp_num)
+    if(Vpp_cnt == Accycle_num)
     {
         unsigned int total = 0;
         unsigned int j;
-        for(j = 0;j < Vpp_num;j++)
+        for(j = 0;j < Accycle_num;j++)
         {
             total = total + Vpp_Table_Ac1[j];
         }
-        ac1 = (float) (total / Vpp_num * 3.3 / 4095);
+        ac1 = (float) (total / Accycle_num * 3.3 / 4095);
         Vpp_cnt = 0;
     }
 }

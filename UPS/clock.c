@@ -6,10 +6,12 @@
  */
 
 
-#include<MSP430F5529.h>
+#include<msp430f5529.h>
 
 void Clock_Init(void)
 {
+    WDTCTL = WDTPW | WDTHOLD;
+
     P5SEL |= BIT2 + BIT3 + BIT4 + BIT5;               //select function
     UCSCTL6 &= ~XT1DRIVE_3;                           // Clear XT1drive field
     UCSCTL6 |= XT1DRIVE_0;                           // Set requested value

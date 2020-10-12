@@ -8,13 +8,15 @@
 #ifndef TIMER_H_
 #define TIMER_H_
 
-#include <msp430f5529.h>
+//#include <system_config.h>
 
-#define TA_Period 320
-#define TA_Percent 192
+#define TA_PERIOD 320
+#define TA_PERCENT 192
 
-#define TB_Period 3200
-#define TB_Percent 1600
+#define TB_PERIOD 3200
+#define TB_PERCENT 1600
+
+#define SIN_POINT 100
 
 void TimerA_init(void);
 void TimerB_init(void);

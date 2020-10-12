@@ -8,8 +8,8 @@
 #ifndef ADC_H_
 #define ADC_H_
 
-#include <msp430f5529.h>
+//#include <system_config.h>
 
-
+#define Accycle_num 3
 
 #endif /* ADC_H_ */

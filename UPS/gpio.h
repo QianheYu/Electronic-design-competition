@@ -2,13 +2,13 @@
  * gpio.h
  *
  *  Created on: 2020Äê10ÔÂ12ÈÕ
- *      Author: ASUS
+ *      Author: QianheYu
  */
 
 #ifndef GPIO_H_
 #define GPIO_H_
 
-#include <msp430f5529.h>
+//#include <system_config.h>
 
 void GPIO_Init();
 
