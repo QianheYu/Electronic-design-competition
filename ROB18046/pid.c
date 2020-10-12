@@ -8,7 +8,7 @@
 #include "pid.h"
 float Kp=1.1,Ki=0.01;
 
-//-----速度闭环控制-----
+//-----闭环控制-----
 float Speed_PI(int Encoder,int Target)
 {
      static float Bias,Pwm,Last_bias,Bias_Integral;
