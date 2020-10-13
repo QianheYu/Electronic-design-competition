@@ -6,7 +6,8 @@
  */
 #include <gpio.h>
 
-void GPIO_Init(){
+unsigned int flag = 0;
+void GPIO_Init(void){
     P1DIR |= BIT2;
     P1SEL |= BIT2;
 
@@ -16,4 +17,15 @@ void GPIO_Init(){
     P6SEL |= BIT0 + BIT1 + BIT2;
 }
 
-
+void Switch_Control(void){
+	if (flag == 0 && ac1 < 2)
+	{
+		P1OUT &= ~BIT0;
+		flag = 1;
+	}
+	else{
+		P1OUT |= BIT0;
+		flag = 0;
+	}
+    return flag;
+}

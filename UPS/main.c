@@ -10,6 +10,7 @@
  */
 extern volatile unsigned int sin_table[SIN_POINT];
 extern float ac0;
+extern float ac1;
 extern unsigned int count;
 void Sin_Tab(void)
 {
@@ -48,7 +49,15 @@ void main(void)
 	__enable_interrupt();
 
 	while(1){
-	    ADC12CTL0 |= ADC12SC;
+	    if (Switch_Control() == 1)
+		{
+			TA0CCTL0 |= CCIE;
+		}
+		else
+		{
+			TA0CCTL0 &= ~CCIE;
+		}
+		ADC12CTL0 |= ADC12SC;
 	    if(count == 256){
 	        CH0_Alternating_Operation();
 	        CH1_Alternating_Operation();

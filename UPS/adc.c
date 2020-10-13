@@ -19,8 +19,7 @@ volatile unsigned int count = 0;
 /**
  * ADC12初始化
  */
-void ADC_Init(void)
-{
+void ADC_Init(void){
 //    P6SEL |= BIT0 + BIT1 + BIT2;
     ADC12CTL0 = ADC12SHT0_8 + ADC12ON + ADC12MSC;
     ADC12CTL1 = ADC12SHP + ADC12CONSEQ_3 + ADC12SSEL_3;
@@ -35,33 +34,27 @@ void ADC_Init(void)
 /**
  * 遍历ADC读取结果找到峰峰值
  */
-void CH0_Alternating_Operation(void)
-{
+void CH0_Alternating_Operation(void){
     static unsigned char Vpp_Cnt = 0;
     unsigned int j;
     unsigned int V_Max = 0;
     unsigned int V_Min = 0;
     V_Max = ch0_results[0];
     V_Min = ch1_results[0];
-    for(j = 1;j <= 255;j++)
-    {
-        if(ch0_results[j] > V_Max)
-        {
+    for(j = 1;j <= 255;j++){
+        if(ch0_results[j] > V_Max){
                 V_Max = ch0_results[j];
         }
-        if(ch0_results[j] < V_Min)
-        {
+        if(ch0_results[j] < V_Min){
                 V_Min = ch0_results[j];
         }
     }
     Vpp_Table_Ac0[Vpp_Cnt] = V_Max - V_Min;
     Vpp_Cnt++;
-    if(Vpp_Cnt == Accycle_num)
-    {
+    if(Vpp_Cnt == Accycle_num){
         unsigned int sum = 0;
         unsigned int j;
-        for(j = 0;j < Accycle_num;j++)
-        {
+        for(j = 0;j < Accycle_num;j++){
             sum = sum + Vpp_Table_Ac0[j];
         }
         ac0 = (float) (sum / Accycle_num * 3.3 / 4095);
@@ -69,33 +62,27 @@ void CH0_Alternating_Operation(void)
     }
 }
 
-void CH1_Alternating_Operation(void)
-{
+void CH1_Alternating_Operation(void){
     static unsigned char Vpp_Cnt = 0;
     unsigned int k;
     unsigned int V_Max = 0;
     unsigned int V_Min = 0;
     V_Max = ch1_results[0];
     V_Min = ch1_results[0];
-    for(k = 1;k <= 255;k++)
-    {
-        if(ch1_results[k] > V_Max)
-        {
+    for(k = 1;k <= 255;k++){
+        if(ch1_results[k] > V_Max){
             V_Max = ch1_results[k];
         }
-        if(ch1_results[k] < V_Min)
-        {
+        if(ch1_results[k] < V_Min){
                 V_Min = ch1_results[k];
         }
     }
     Vpp_Table_Ac1[Vpp_Cnt] = V_Max - V_Min;
     Vpp_Cnt++;
-    if(Vpp_Cnt == Accycle_num)
-    {
+    if(Vpp_Cnt == Accycle_num){
         unsigned int sum = 0;
         unsigned int j;
-        for(j = 0;j < Accycle_num;j++)
-        {
+        for(j = 0;j < Accycle_num;j++){
             sum = sum + Vpp_Table_Ac1[j];
         }
         ac1 = (float) (sum / Accycle_num * 3.3 / 4095);
@@ -129,10 +116,8 @@ void CH2_Direct_Operation(void){
 
 
 #pragma vector = ADC12_VECTOR
-__interrupt void ADC12_ISR(void)
-{
-    switch(__even_in_range(ADC12IV,34))
-    {
+__interrupt void ADC12_ISR(void){
+    switch(__even_in_range(ADC12IV,34)){
         case 10:
             ch0_results[count] = ADC12MEM0;
             ch1_results[count] = ADC12MEM1;

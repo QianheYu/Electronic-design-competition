@@ -1,7 +1,7 @@
 /*
  * gpio.h
  *
- *  Created on: 2020Äê10ÔÂ12ÈÕ
+ *  Created on: 2020ï¿½ï¿½10ï¿½ï¿½12ï¿½ï¿½
  *      Author: QianheYu
  */
 
@@ -10,7 +10,7 @@
 
 #include <system_config.h>
 
-void GPIO_Init();
-
+void GPIO_Init(void);
+void Switch_Control(void);
 
 #endif /* GPIO_H_ */
