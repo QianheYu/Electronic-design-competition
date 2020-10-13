@@ -41,13 +41,14 @@ void main(void)
 	Clock_Init();
 	GPIO_Init();
 	Sin_Tab();
-	TimerB_Init();
 	TimerA_Init();
+	TimerB_Init();
 	ADC_Init();
 
-
 	__enable_interrupt();
+
 	while(1){
+	    ADC12CTL0 |= ADC12SC;
 	    if(count == 256){
 	        CH0_Alternating_Operation();
 	        CH1_Alternating_Operation();

@@ -131,7 +131,6 @@ void CH2_Direct_Operation(void){
 #pragma vector = ADC12_VECTOR
 __interrupt void ADC12_ISR(void)
 {
-//    __enable_interrupt();
     switch(__even_in_range(ADC12IV,34))
     {
         case 10:

@@ -31,7 +31,7 @@ void TimerB_Init(void)
     TB0CCR5 = TB_PERCENT;
     TB0CCR6 = TB_PERCENT;
 
-    TB0CCR0 |= CCIE;
+    TB0CCTL0 |= CCIE;
 }
 
 #pragma vector = TIMER0_B0_VECTOR

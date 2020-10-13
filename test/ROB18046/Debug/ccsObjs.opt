@@ -1,0 +1,1 @@
+"./ADC.obj" "./CLOCK.obj" "./PID.obj" "./SPWM.obj" "./main.obj" "../lnk_msp430f5529.cmd" -llibmath.a -llibc.a 
