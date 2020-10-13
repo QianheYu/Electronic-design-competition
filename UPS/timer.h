@@ -8,7 +8,7 @@
 #ifndef TIMER_H_
 #define TIMER_H_
 
-//#include <system_config.h>
+#include <system_config.h>
 
 #define TA_PERIOD 320
 #define TA_PERCENT 192
@@ -18,7 +18,7 @@
 
 #define SIN_POINT 100
 
-void TimerA_init(void);
-void TimerB_init(void);
+void TimerA_Init(void);
+void TimerB_Init(void);
 
 #endif /* TIMER_H_ */

@@ -8,7 +8,7 @@
 #ifndef GPIO_H_
 #define GPIO_H_
 
-//#include <system_config.h>
+#include <system_config.h>
 
 void GPIO_Init();
 

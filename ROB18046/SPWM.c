@@ -58,15 +58,15 @@ void Sin_Table(void)
 //    float pidParameter = Speed_PI();
     for(i = 0; i < SIN_NUM; i++)
     {
-//        sine = sin(i * interval)*0.9;
-        float Proportion = (0.9 + Speed_PI(Vpp_ac0, 1.5));
-        if(Proportion > 1){
-            Proportion = 1;
-        }
-        else if(Proportion < 0){
-            Proportion = 0;
-        }
-        sine = sin(i*interval)*Proportion;
+        sine = sin(i * interval)*0.9;
+//        float Proportion = (0.9 + Speed_PI(Vpp_ac0, 1.5));
+//        if(Proportion > 1){
+//            Proportion = 1;
+//        }
+//        else if(Proportion < 0){
+//            Proportion = 0;
+//        }
+//        sine = sin(i*interval)*Proportion;
         sin_table[i] = (unsigned int) ((1 + sine) * Period_B / 2);
     }
 }

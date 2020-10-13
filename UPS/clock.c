@@ -6,7 +6,7 @@
  */
 
 
-#include<msp430f5529.h>
+#include<clock.h>
 
 void Clock_Init(void)
 {

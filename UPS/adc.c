@@ -5,11 +5,7 @@
  *      Author: QianheYu
  */
 
-#include <msp430f5529.h>
 #include <adc.h>
-//volatile unsigned int results_0[256];
-//volatile unsigned int results_1[256];
-//volatile unsigned int results_2[256];
 volatile unsigned int ch0_results[256];
 volatile unsigned int ch1_results[256];
 volatile unsigned int ch2_results[256];
@@ -18,15 +14,14 @@ volatile unsigned int Vpp_Table_Ac1[Accycle_num];
 float ac0;
 float ac1;
 float dc;
-unsigned int count = 0;
-//unsigned int alternat = 0;
-//unsigned int direct = 0;
+volatile unsigned int count = 0;
+
 /**
  * ADC12初始化
  */
 void ADC_Init(void)
 {
-    P6SEL |= BIT0 + BIT1 + BIT2;
+//    P6SEL |= BIT0 + BIT1 + BIT2;
     ADC12CTL0 = ADC12SHT0_8 + ADC12ON + ADC12MSC;
     ADC12CTL1 = ADC12SHP + ADC12CONSEQ_3 + ADC12SSEL_3;
     ADC12MCTL0 = ADC12INCH_0;
@@ -40,91 +35,71 @@ void ADC_Init(void)
 /**
  * 遍历ADC读取结果找到峰峰值
  */
-void CH0_Vpp_Operation(void)
+void CH0_Alternating_Operation(void)
 {
-    static unsigned char Vpp_cnt = 0;
+    static unsigned char Vpp_Cnt = 0;
     unsigned int j;
-    unsigned int V_max = 0;
-    unsigned int V_min = 0;
-//    V_max = results_0[0];
-    V_max = ch0_results[0];
-//    V_min = results_0[0];
-    V_min = ch1_results[0];
+    unsigned int V_Max = 0;
+    unsigned int V_Min = 0;
+    V_Max = ch0_results[0];
+    V_Min = ch1_results[0];
     for(j = 1;j <= 255;j++)
     {
-//        if(results_0[j] > V_max)
-//        {
-//            V_max = results_0[j];
-//        }
-//        if(results_0[j] < V_min)
-//        {
-//            V_min = results_0[j];
-//        }
-        if(ch0_results[j] > V_max)
+        if(ch0_results[j] > V_Max)
         {
-                V_max = ch0_results[j];
+                V_Max = ch0_results[j];
         }
-        if(ch0_results[j] < V_min)
+        if(ch0_results[j] < V_Min)
         {
-                V_min = ch0_results[j];
+                V_Min = ch0_results[j];
         }
     }
-    Vpp_Table_Ac0[Vpp_cnt] = V_max - V_min;
-    Vpp_cnt++;
-    if(Vpp_cnt == Accycle_num)
+    Vpp_Table_Ac0[Vpp_Cnt] = V_Max - V_Min;
+    Vpp_Cnt++;
+    if(Vpp_Cnt == Accycle_num)
     {
-        unsigned int total = 0;
+        unsigned int sum = 0;
         unsigned int j;
         for(j = 0;j < Accycle_num;j++)
         {
-            total = total + Vpp_Table_Ac0[j];
+            sum = sum + Vpp_Table_Ac0[j];
         }
-        ac0 = (float) (total / Accycle_num * 3.3 / 4095);
-        Vpp_cnt = 0;
+        ac0 = (float) (sum / Accycle_num * 3.3 / 4095);
+        Vpp_Cnt = 0;
     }
 }
 
-void CH1_Vpp_Operation(void)
+void CH1_Alternating_Operation(void)
 {
-    static unsigned char Vpp_cnt = 0;
+    static unsigned char Vpp_Cnt = 0;
     unsigned int k;
-    unsigned int V_max = 0;
-    unsigned int V_min = 0;
-//    V_max = results_1[0];
-//    V_min = results_1[0];
-    V_max = ch1_results[0];
-    V_min = ch1_results[0];
+    unsigned int V_Max = 0;
+    unsigned int V_Min = 0;
+    V_Max = ch1_results[0];
+    V_Min = ch1_results[0];
     for(k = 1;k <= 255;k++)
     {
-//        if(results_1[k] > V_max)
-//        {
-//            V_max = results_1[k];
-//        }
-//        if(results_1[k] < V_min)
-//        {
-//            V_min = results_1[k];
-//        }
-        if(ch1_results[k] > V_max)
+        if(ch1_results[k] > V_Max)
         {
-            V_max = ch1_results[k];
+            V_Max = ch1_results[k];
         }
-        if(ch1_results[k] < V_min)
+        if(ch1_results[k] < V_Min)
         {
-                V_min = ch1_results[k];
+                V_Min = ch1_results[k];
         }
     }
-    Vpp_Table_Ac1[Vpp_cnt] = V_max - V_min;
-    Vpp_cnt++;
-    if(Vpp_cnt == Accycle_num)
+    Vpp_Table_Ac1[Vpp_Cnt] = V_Max - V_Min;
+    Vpp_Cnt++;
+    if(Vpp_Cnt == Accycle_num)
     {
-        unsigned int total = 0;
+        unsigned int sum = 0;
         unsigned int j;
         for(j = 0;j < Accycle_num;j++)
         {
-            total = total + Vpp_Table_Ac1[j];
+            sum = sum + Vpp_Table_Ac1[j];
         }
-        ac1 = (float) (total / Accycle_num * 3.3 / 4095);
-        Vpp_cnt = 0;
+        ac1 = (float) (sum / Accycle_num * 3.3 / 4095);
+        Vpp_Cnt = 0;
     }
 }
 
@@ -157,16 +132,15 @@ void CH2_Direct_Operation(void){
 __interrupt void ADC12_ISR(void)
 {
 //    __enable_interrupt();
-    static unsigned int count = 0;
-    switch(ADC12IV)
+    switch(__even_in_range(ADC12IV,34))
     {
-    case 10:
-        ch0_results[count] = ADC12MEM0;
-        ch1_results[count] = ADC12MEM1;
-        ch2_results[count] = ADC12MEM2;
-        count++;
-        break;
-    default:break;
+        case 10:
+            ch0_results[count] = ADC12MEM0;
+            ch1_results[count] = ADC12MEM1;
+            ch2_results[count] = ADC12MEM2;
+            count++;
+            break;
+        default:break;
     }
 }
 

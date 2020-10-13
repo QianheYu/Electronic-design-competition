@@ -8,6 +8,6 @@
 #ifndef SYSTEM_CONFIG_H_
 #define SYSTEM_CONFIG_H_
 
-//#include <msp430.h>
+#include <msp430.h>
 
 #endif /* SYSTEM_CONFIG_H_ */

@@ -8,7 +8,7 @@
 #ifndef CLOCK_H_
 #define CLOCK_H_
 
-//#include <system_config.h>
+#include <system_config.h>
 
 void Clock_Init();
 

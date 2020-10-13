@@ -4,12 +4,11 @@
  *  Created on: 2020Äê10ÔÂ12ÈÕ
  *      Author: QianheYu
  */
-#include <msp430f5529.h>
 #include <timer.h>
 
 volatile unsigned int sin_table[SIN_POINT] = {};
 
-void TimerA_init(void)
+void TimerA_Init(void)
 {
     TA0CTL = TACLR;
     TA0CTL = TASSEL_2  + MC_1 + ID_0;    // ACLK + Up
@@ -19,7 +18,7 @@ void TimerA_init(void)
     TA0CCR1 = TA_PERCENT;
 }
 
-void TimerB_init(void)
+void TimerB_Init(void)
 {
     TB0CTL = TBCLR;
     TB0CTL = TBSSEL_2  + MC_1 + ID_0;
@@ -31,17 +30,15 @@ void TimerB_init(void)
 
     TB0CCR5 = TB_PERCENT;
     TB0CCR6 = TB_PERCENT;
+
+    TB0CCR0 |= CCIE;
 }
 
 #pragma vector = TIMER0_B0_VECTOR
 __interrupt void Timer0_B0_ISR(void)
 {
-//    _disable_interrupts();
-
     static unsigned int i = 0;
-//    TB0CCR5 = sin_table[i];
-//    TB0CCR6 = sin_table[i];
+    TB0CCR5 = sin_table[i];
+    TB0CCR6 = sin_table[i];
     i = (++i) % SIN_POINT;
-
-//    _enable_interrupts();
 }
