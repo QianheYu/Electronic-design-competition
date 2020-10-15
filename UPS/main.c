@@ -41,7 +41,7 @@ void main(void)
 	
 	Clock_Init();
 	GPIO_Init();
-	Sin_Tab();
+	
 	TimerA_Init();
 	TimerB_Init();
 	ADC_Init();
@@ -57,6 +57,7 @@ void main(void)
 		{
 			TA0CCTL0 &= ~CCIE;
 		}
+		Sin_Tab();
 		ADC12CTL0 |= ADC12SC;
 	    if(count == 256){
 	        CH0_Alternating_Operation();
